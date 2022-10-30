@@ -9,11 +9,19 @@ import java.io.PrintStream;
 import org.apache.commons.net.telnet.TelnetClient;
 
 public class MyTelnetClient {
-	final static String PIONEER = "192.168.1.63";
-	final static int PORT = 8102;
 	private TelnetClient telnet;
 	
 	public static void main(String[] args) {
+		if(args!=null && args.length==2) {
+			final String IP=args[0];
+			final int PORT=Integer.parseInt(args[1]);
+			MyTelnetClient myTelnetClient=new MyTelnetClient();
+			myTelnetClient.connect(IP, PORT);
+		}
+		else {
+			throw new IllegalArgumentException("IP PORT");
+		}
+
 	}
 	
 	public void connect(final String ip, final int port) {
