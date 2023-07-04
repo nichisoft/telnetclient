@@ -15,17 +15,17 @@ public class MyTelnetClient {
 			final int PORT=Integer.parseInt(args[1]);
 			MyTelnetClient myTelnetClient=new MyTelnetClient();
 			myTelnetClient.connect(IP, PORT);
-//			myTelnetClient.sendCommand("?RGC");
-//			myTelnetClient.sendCommand("?P");
-//			myTelnetClient.sendCommand("?F");
-//			myTelnetClient.sendCommand("?GAH");
-//			myTelnetClient.sendCommand("?GAP"); //restituisce la cartella corrente
-//			myTelnetClient.sendCommand("00001GHP");
-//			myTelnetClient.sendCommand("00005GHP");
-//			myTelnetClient.sendCommand("?ICA");
-//			myTelnetClient.sendCommand("?GIA0000100008");
-//			myTelnetClient.sendCommand("?GIA0000900011");
-			myTelnetClient.sendCommand("00001GHP");
+//			myTelnetClient.sendCommand("?RGC", 0L);
+//			myTelnetClient.sendCommand("?P", 0L);
+//			myTelnetClient.sendCommand("?F", 0L);
+//			myTelnetClient.sendCommand("?GAH", 0L);
+//			myTelnetClient.sendCommand("?GAP", 750L); //restituisce la cartella corrente
+//			myTelnetClient.sendCommand("00001GHP", 750L);
+//			myTelnetClient.sendCommand("00005GHP", 750L);
+//			myTelnetClient.sendCommand("?ICA", 0L);
+			myTelnetClient.sendCommand("?GIA0000100180", 750L);
+//			myTelnetClient.sendCommand("?GIA0002400032", 750L);
+//			myTelnetClient.sendCommand("00001GHP", 750L);
 		}
 		else {
 			throw new IllegalArgumentException("IP PORT");
@@ -42,7 +42,7 @@ public class MyTelnetClient {
 		}
 	}
 	
-	public String sendCommand(final String command) {
+	public String sendCommand(final String command, final Long sleepTimeMillis) {
 		StringBuffer output=null;
 		if(telnet!=null && telnet.isConnected()) {
 			InputStream in = telnet.getInputStream();
@@ -57,12 +57,19 @@ public class MyTelnetClient {
 				output = new StringBuffer();
 				byte[] buf = new byte[4096];
 				int len = 0;
-				Thread.sleep(750L);
-				while ((len = in.read(buf)) != 0) {
-					output.append(new String(buf, 0, len));
+				
+				if(sleepTimeMillis>0)
 					Thread.sleep(750L);
-			        if (in.available() == 0)
-			        	break;
+				while ((len = in.read(buf)) != 0) {
+					if(len>=0) {
+						output.append(new String(buf, 0, len));
+						if(sleepTimeMillis>0)
+							Thread.sleep(750L);
+				        if (in.available() == 0)
+				        	break;
+					}
+					else if(len==-1)
+						break;
 				}
 //				output=reader.readLine();
 //				output = reader.lines().collect(Collectors.joining("\r\n"));
