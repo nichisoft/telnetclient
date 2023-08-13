@@ -59,12 +59,12 @@ public class MyTelnetClient {
 				int len = 0;
 				
 				if(sleepTimeMillis>0)
-					Thread.sleep(750L);
+					Thread.sleep(sleepTimeMillis);
 				while ((len = in.read(buf)) != 0) {
 					if(len>=0) {
 						output.append(new String(buf, 0, len));
 						if(sleepTimeMillis>0)
-							Thread.sleep(750L);
+							Thread.sleep(sleepTimeMillis);
 				        if (in.available() == 0)
 				        	break;
 					}
